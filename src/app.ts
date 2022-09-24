@@ -1,6 +1,6 @@
-const createPoster = require('./createPoster')
-const createPoster_ = require('./createPoster_')
-const express = require('express')
+import createPoster from './router/createPoster'
+import express from 'express'
+
 const app = express()
 const port = 3000
 
@@ -11,9 +11,7 @@ app.use(json)
 
 // 生成海报图
 app.get('/', createPoster)
-
-// 生成海报图post
-app.post('/create/poster', createPoster_)
+app.get('/createPoster', createPoster)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

@@ -1,6 +1,4 @@
-const nodeHtmlToImage = require('node-html-to-image')
-
-const html = `<html>
+export default `<html>
 
 <head>
     <style>
@@ -41,21 +39,3 @@ const html = `<html>
 </body>
 
 </html>`
-
-async function createPoster(req, res) {
-    const currentTime = new Date().valueOf()
-    const output = currentTime + '.png'
-
-    const image = await nodeHtmlToImage({
-        output,
-        html
-    })
-
-    const base64Image = new Buffer.from(image).toString('base64');
-    const dataURI = 'data:image/jpeg;base64,' + base64Image
-
-    res.set({ 'Content-Type': 'text/html' })
-    res.send(`<img src=${dataURI} />`)
-}
-
-module.exports = createPoster
