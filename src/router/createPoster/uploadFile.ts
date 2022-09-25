@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export function uploadFile(formData) {
+export default function uploadFile(formData) {
     return axios('https://mystore-img-test.was.ink/', {
         method: 'POST',
         headers: {

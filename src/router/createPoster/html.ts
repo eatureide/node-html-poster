@@ -34,7 +34,7 @@ export default `<html>
 </head>
 
 <body>
-<p>牛逼晶晶闪亮亮</p>
+<p>20220925</p>
 <img src="https://mystore-h5.watsonsvip.com.cn/b-makeup%2Fb-makeup-look.png"/>
 </body>
 
