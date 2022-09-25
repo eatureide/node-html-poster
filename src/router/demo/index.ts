@@ -1,9 +1,9 @@
 import express from 'express'
 import nodeHtmlToImage from 'node-html-to-image'
 import fs from 'fs'
-import { AxiosResponse } from 'axios'
-import { uploadFile } from './ali'
 import html from './html'
+import { uploadFile } from './ali'
+import axios, { AxiosResponse } from 'axios'
 
 interface uploadResultInterface extends AxiosResponse {
     status: number
@@ -45,3 +45,4 @@ async function createPoster(req: express.Request, res: express.Response) {
 }
 
 export default createPoster
+
