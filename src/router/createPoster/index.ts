@@ -1,74 +1,85 @@
 import express from 'express'
 import nodeHtmlToImage from 'node-html-to-image'
-import { AxiosResponse } from 'axios'
+import { Duplex } from 'stream'
+import { aliyunToken } from '../../api/aliyun'
+import { CryptoJS } from '../../utils/aes'
 import uploadFile from './uploadFile'
-import fs from 'fs'
+import qs from 'qs'
+import { createPosterInterReqInterface } from './interface'
 
-interface uploadResultInterface extends AxiosResponse {
-    status: number
+
+function getPolicyBase64(expire) {
+    const date = new Date(expire)
+    date.setHours(date.getHours() + 24) // 过期时间为获取的时间+24小时
+    const srcT = date.toISOString() // 如果不是ISO标准，使用 toISOString转一下格式
+    const policyText = {
+        'expiration': srcT, //设置该Policy的失效时间，超过这个失效时间之后，就没有办法通过这个policy上传文件了
+        'conditions': [
+            ['content-length-range', 0, 10 * 1024 * 1024] // 设置上传文件的大小限制,10mb
+        ]
+    }
+    const jsonText = JSON.stringify(policyText)
+    const policyBase64 = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(jsonText))
+    return policyBase64
 }
 
-interface createPosterInterReqInterface {
-    signature: string
-    OSSAccessKeyId: string
-    key: string
-    policy: string
-    'x-oss-security-token': string
-    html: string
+function getSignature(accessKeySecret, policyBase64) {
+    const bytes = CryptoJS.HmacSHA1(policyBase64, accessKeySecret)
+    return CryptoJS.enc.Base64.stringify(bytes)
 }
 
-const bodyKeys = ['signature', 'OSSAccessKeyId', 'key', 'policy', 'x-oss-security-token', 'html']
+export async function createPoster(req: express.Request, res: express.Response) {
 
-async function createPoster(req: express.Request, res: express.Response) {
-
-    const currentTime = new Date().valueOf()
-    const output = '../../static' + currentTime + '.png'
+    // 获取请求参数
     const { html, ...reset }: createPosterInterReqInterface = req.body
-    // 检查必传字段
-    const findErrorKey = bodyKeys.find((key) => {
-        return !req.body[key] || typeof req.body[key] !== 'string'
-    })
+    const fileType = '.png'
 
-    // 如有空或者类型不正确则返回错误
-    if (findErrorKey) {
+    // 如果不是html的话，返回报错
+    if (!html) {
         res.send({
             code: 99999,
-            data: findErrorKey + '必传且类型必须为字符串'
+            message: '缺少html或不是标准html字符串'
         })
-        return
     }
+
+    const aliyunTokenRes = await aliyunToken(qs.stringify(reset))
+    const { domain, prefix, token, region, access_key_id, access_key_secret, bucket, policy, expire } = aliyunTokenRes.data.data
+    const policyBase64 = getPolicyBase64(expire)
+    const signature = getSignature(access_key_secret, policyBase64) //获取签名
 
     // 生成图片
-    await nodeHtmlToImage({
-        output,
+    const imageBuffer = await nodeHtmlToImage({
         transparent: true,
         html: html
-    })
+    }) as Buffer
+
+    // 创建stream流
+    const stream = new Duplex()
+    stream.push(imageBuffer)
+    stream.push(null)
 
     // 生成完成后上传至阿里云
-    const uploadResult: uploadResultInterface = await uploadFile({
-        ...reset,
-        file: fs.createReadStream(output)
+    const successKey = `${prefix}${fileType}`
+    const successPath = `${domain}${successKey}`
+    const uploadResult = await uploadFile({
+        'signature': signature,
+        'OSSAccessKeyId': access_key_id,
+        'key': successKey,
+        'policy': policyBase64,
+        'x-oss-security-token': token,
+        file: stream
     })
 
-    // 上传完成后删除本地图片
-    fs.unlink(output, () => {
-        console.log('文件', output, '已删除')
-    })
-
-    if (uploadResult.status !== 204) {
-        res.send({
-            code: 99999,
-            data: 'fail:图片生成或者上传失败'
-        })
+    const responseData = {
+        domain,
+        key: successKey,
+        fullPath: successPath
     }
 
+    // 返回给前端
     res.send({
         code: 10000,
-        data: {
-            fullPath: `https://mystore-img-test.was.ink/${req.body.key}`
-        }
+        data: responseData
     })
 }
 
-export default createPoster
