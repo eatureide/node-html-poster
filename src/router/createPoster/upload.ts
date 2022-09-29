@@ -2,8 +2,8 @@ import express from 'express'
 import { createPosterMiddleWareNextParams } from './interface'
 import { upload as aliyunUpload } from '../../api/aliyun'
 
-export async function upload(req: createPosterMiddleWareNextParams, res: express.Response) {
-    const { domain, signature, OSSAccessKeyId, key, policy } = req.body.aliyunParams
+export async function upload(req: express.Request, res: express.Response) {
+    const { domain, signature, OSSAccessKeyId, key, policy }: createPosterMiddleWareNextParams = req.body.aliyunParams
     const { posterStream } = req.body
     const x_oss_security_token = req.body.aliyunParams['x-oss-security-token']
     try {

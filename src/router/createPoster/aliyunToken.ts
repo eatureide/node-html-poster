@@ -24,8 +24,8 @@ function getSignature(accessKeySecret, policyBase64) {
     return CryptoJS.enc.Base64.stringify(bytes)
 }
 
-export async function aliyunToken(req: createPosterMiddleWareNextParams, res: express.Response, next: express.NextFunction) {
-    const { html, ...reset } = req.body
+export async function aliyunToken(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { html, ...reset }: createPosterMiddleWareNextParams = req.body
     const aliyunTokenRes = await getAliYunToken(qs.stringify(reset))
     const { domain, prefix, token, region, access_key_id, access_key_secret, bucket, policy, expire } = aliyunTokenRes.data.data
     const policyBase64 = getPolicyBase64(expire)
