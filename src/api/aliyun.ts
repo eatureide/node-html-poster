@@ -6,13 +6,14 @@ export function aliyunToken(params): AxiosPromise<aliyunTokenResInterface> {
     return axios(url, { method: 'get' })
 }
 
-export default function upload(formData) {
-    return axios('https://mystore-img-test.was.ink/', {
+export function upload(formData) {
+    const { url, data } = formData
+    return axios(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'multipart/form-data'
         },
-        data: formData
+        data
     })
 }
 

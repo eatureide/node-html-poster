@@ -34,11 +34,12 @@ export async function aliyunToken(req: createPosterMiddleWareNextParams, res: ex
     const successKey = `${prefix}${fileType}`
     const successPath = `${domain}${successKey}`
     const nextParams = {
-        'signature': signature,
-        'OSSAccessKeyId': access_key_id,
-        'key': successKey,
-        'policy': policyBase64,
+        signature: signature,
+        OSSAccessKeyId: access_key_id,
+        key: successKey,
+        policy: policyBase64,
         'x-oss-security-token': token,
+        domain
     }
     const aliyunUploadResponse = {
         successKey,

@@ -12,6 +12,7 @@ export interface createPosterMiddleWareNextParams extends express.Request {
         access_token: string
         api_sign: string
         aliyunParams: {
+            domain: string
             signature: string
             OSSAccessKeyId: string
             key: string
