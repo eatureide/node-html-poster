@@ -6,8 +6,8 @@ const html = `
       <style>
         body {
           background:#fff;
-          width: 500px;
-          height: 500px;
+          width: 1000px;
+          height: 1000px;
         }
       </style>
     </head>
@@ -19,6 +19,7 @@ const html = `
 export async function demo(req, res) {
     console.time('test')
     const imageBuffer = await nodeHtmlToImage({
+        output: './img.png',
         transparent: true,
         html: html
     }) as Buffer
