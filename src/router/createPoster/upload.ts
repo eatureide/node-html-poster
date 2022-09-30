@@ -1,6 +1,7 @@
 import express from 'express'
 import { createPosterMiddleWareNextParams } from './interface'
 import { upload as aliyunUpload } from '../../api/aliyun'
+import { ERROR_CODE, SUCCESS_CODE } from '../../constant'
 
 export async function upload(req: express.Request, res: express.Response) {
     const { domain, signature, OSSAccessKeyId, key, policy }: createPosterMiddleWareNextParams = req.body.aliyunParams
@@ -27,12 +28,12 @@ export async function upload(req: express.Request, res: express.Response) {
 
         // 返回给前端
         res.send({
-            code: 10000,
+            code: SUCCESS_CODE,
             data: responseData
         })
     } catch (error) {
         res.send({
-            code: 9999,
+            code: ERROR_CODE,
             data: error
         })
     }

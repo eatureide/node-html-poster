@@ -14,8 +14,8 @@ app.use(express.urlencoded({ extended: false }))
 app.post(
     '/create/poster',
     createPoster.checkRequest, // 检查参数
-    createPoster.aliyunToken, // 获取阿里云token
     createPoster.createPoster, // 生成海报
+    createPoster.aliyunToken, // 获取阿里云token
     createPoster.upload // 上传海报并返回结果给前端
 )
 

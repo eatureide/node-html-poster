@@ -55,32 +55,36 @@ const html = `<html>
 </body>
 
 </html>`
-
+let count = 0
+let timer = null
 
 export async function demo(req, res) {
-  const counter = 10
-  let count = 0
-  let timer = null
-  const fn = async () => {
-    console.time(`第${count}次`)
-    const time = new Date().valueOf()
+
+  const task = []
+  const fn = async (count) => {
+    const startTime = new Date().valueOf()
     await nodeHtmlToImage({
       transparent: true,
-      output: `./static/${time}.png`,
+      output: `./img.png`,
       html
     })
-    console.timeEnd(`第${count}次`)
+    const endTime = new Date().valueOf()
+    const resultTime = ((endTime - startTime) / 1000) + 's'
+    console.log(`第${count}次生成所需时间：`, resultTime)
   }
+  const data = [...Array.from({ length: 10 }).keys()]
+  data.forEach(() => task.push(fn))
 
   timer = setInterval(() => {
-    if (count !== counter) {
+    const t = task.pop()
+    if (t) {
       count = count + 1
-      fn()
-    }
-    if (count === counter) {
+      t(count)
+    } else {
+      count = 0
       clearInterval(timer)
     }
-  }, 1500)
+  }, 1000)
 
   res.send('ok')
 }

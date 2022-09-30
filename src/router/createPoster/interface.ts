@@ -1,6 +1,17 @@
-import express from 'express'
-
-interface bodyInterface {
+export const allBodyKey = [
+    'html',
+    'type',
+    'plat',
+    'version',
+    'timestamp',
+    'app_version',
+    'app_key',
+    'session_token',
+    'access_token',
+    'api_sign'
+]
+export interface bodyInterface {
+    type: 'base64' | 'png'
     html: string
     plat: string
     version: string
@@ -12,9 +23,7 @@ interface bodyInterface {
     api_sign: string
 }
 
-type posterStream = object
-
-interface aliyunParamsInterface {
+export interface aliyunParamsInterface {
     domain: string
     signature: string
     OSSAccessKeyId: string
@@ -23,11 +32,17 @@ interface aliyunParamsInterface {
     'x-oss-security-token': string
 }
 
-interface aliyunUploadResponseInterface {
+export interface aliyunUploadResponseInterface {
     successKey: string
     successPath: string
 }
 
-type k1 = keyof bodyInterface
+export interface posterStreamInterface {
+    posterStream: object
+}
 
-export interface createPosterMiddleWareNextParams extends bodyInterface, aliyunParamsInterface, aliyunUploadResponseInterface { }
+export interface createPosterMiddleWareNextParams extends
+    bodyInterface,
+    posterStreamInterface,
+    aliyunParamsInterface,
+    aliyunUploadResponseInterface { }
