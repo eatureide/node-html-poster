@@ -1,6 +1,6 @@
 import express from 'express'
 import { allBodyKey, bodyInterface } from './interface'
-import { ERROR_CODE } from '../../constant'
+import { ERROR_CODE } from '@/constant'
 
 export function checkRequest(req: express.Request, res: express.Response, next: express.NextFunction) {
     // 检查参数，找到为空或者不为字符串的

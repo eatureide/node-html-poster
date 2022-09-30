@@ -1,7 +1,9 @@
+import 'module-alias/register'
 import express from 'express'
 import createPoster from './router/createPoster'
 import { config } from 'dotenv'
 import { demo } from './router/demo'
+
 
 const app = express()
 const port = 3000

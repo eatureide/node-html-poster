@@ -1,7 +1,7 @@
 import express from 'express'
 import { createPosterMiddleWareNextParams } from './interface'
-import { upload as aliyunUpload } from '../../api/aliyun'
-import { ERROR_CODE, SUCCESS_CODE } from '../../constant'
+import { upload as aliyunUpload } from '@/api/aliyun'
+import { ERROR_CODE, SUCCESS_CODE } from '@/constant'
 
 export async function upload(req: express.Request, res: express.Response) {
     const { domain, signature, OSSAccessKeyId, key, policy }: createPosterMiddleWareNextParams = req.body.aliyunParams

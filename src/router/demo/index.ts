@@ -1,5 +1,5 @@
 import nodeHtmlToImage from 'node-html-to-image'
-
+import { ERROR_CODE } from '@/constant'
 const html = `<html>
 
 <head>
@@ -62,17 +62,14 @@ export async function demo(req, res) {
 
   const task = []
   const fn = async (count) => {
-    const startTime = new Date().valueOf()
+    console.time(`test`)
     await nodeHtmlToImage({
       transparent: true,
-      output: `./img.png`,
       html
     })
-    const endTime = new Date().valueOf()
-    const resultTime = ((endTime - startTime) / 1000) + 's'
-    console.log(`第${count}次生成所需时间：`, resultTime)
+    console.timeEnd(`test`)
   }
-  const data = [...Array.from({ length: 10 }).keys()]
+  const data = [...Array.from({ length: 1000 }).keys()]
   data.forEach(() => task.push(fn))
 
   timer = setInterval(() => {
@@ -84,7 +81,7 @@ export async function demo(req, res) {
       count = 0
       clearInterval(timer)
     }
-  }, 1000)
+  }, 1500)
 
   res.send('ok')
 }

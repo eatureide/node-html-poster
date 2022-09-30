@@ -2,7 +2,7 @@ import { Duplex } from 'stream'
 import nodeHtmlToImage from 'node-html-to-image'
 import { bodyInterface } from './interface'
 import express from 'express'
-import { ERROR_CODE } from '../../constant'
+import { ERROR_CODE } from '@/constant'
 
 export async function createPoster(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {

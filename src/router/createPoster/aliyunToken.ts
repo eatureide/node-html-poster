@@ -1,9 +1,9 @@
-import { CryptoJS } from '../../utils/aes'
-import { aliyunToken as getAliYunToken } from '../../api/aliyun'
+import { CryptoJS } from '@/utils/aes'
+import { aliyunToken as getAliYunToken } from '@/api/aliyun'
 import { createPosterMiddleWareNextParams } from './interface'
 import qs from 'qs'
 import express from 'express'
-import { ERROR_CODE } from '../../constant'
+import { ERROR_CODE } from '@/constant'
 
 function getPolicyBase64(expire) {
     const date = new Date(expire)
