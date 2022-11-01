@@ -14,6 +14,7 @@ export interface bodyInterface {
     type: 'base64' | 'png'
     html: string
     plat: string
+    font: string,
     version: string
     timestamp: string
     app_version: string
